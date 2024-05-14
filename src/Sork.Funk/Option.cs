@@ -1,0 +1,73 @@
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+
+namespace Sork.Funk;
+
+public readonly record struct Option<T>
+{
+    private readonly T? _value;
+    private readonly bool _isSome;
+
+    [Pure] public bool IsSome => _isSome;
+    [Pure] public bool IsNone => !_isSome;
+
+    private Option(T value)
+    {
+        _value = value;
+        _isSome = true;
+    }
+
+    /// <summary>
+    /// Creates an <see cref="Option{T}"/> with a non-null value.
+    /// </summary>
+    /// <param name="value">The non-null value to wrap in an option.</param>
+    /// <returns>An option containing the specified value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
+    public static Option<T> Some([DisallowNull] T value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        return new Option<T>(value);
+    }
+
+    public static readonly Option<T> None = default;
+
+    /// <summary>
+    /// Maps the value of this option to a new value of type <typeparamref name="TNew"/>.
+    /// </summary>
+    /// <typeparam name="TNew">The type of the new value.</typeparam>
+    /// <param name="map">A function that transforms the current value.</param>
+    /// <returns>An option containing the mapped value.</returns>
+    /// <remarks>If this option is None, the result will also be None.</remarks>
+    [Pure]
+    public Option<TNew> Map<TNew>(Func<T, TNew> map) =>
+#nullable disable
+        _isSome
+            ? Option<TNew>.Some(map(_value))
+            : default;
+#nullable enable
+    /// <summary>
+    /// Binds the current value to a new option of type <typeparamref name="TN"/>.
+    /// </summary>
+    /// <typeparam name="TN">The type of the new option's value.</typeparam>
+    /// <param name="bind">A function that produces a new option based on the current value.</param>
+    /// <returns>The resulting option after binding.</returns>
+    /// <remarks>If this option is None, the result will also be None.</remarks>
+    [Pure]
+    public Option<TN> Bind<TN>(Func<T, Option<TN>> bind) =>
+        _isSome
+            ? bind(_value!)
+            : default;
+
+    /// <summary>
+    /// Matches the current option, invoking the appropriate delegate based on whether it is Some or None.
+    /// </summary>
+    /// <typeparam name="TRes">The type of the result.</typeparam>
+    /// <param name="some">A function to apply to the value if this option is Some.</param>
+    /// <param name="none">A function to apply if this option is None.</param>
+    /// <returns>The result of applying the appropriate delegate.</returns>
+    [Pure]
+    public TRes Match<TRes>(Func<T, TRes> some, Func<TRes> none) =>
+        _isSome
+            ? some(_value!)
+            : none();
+}

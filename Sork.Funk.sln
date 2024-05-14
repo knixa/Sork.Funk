@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sork.Funk", "src\Sork.Funk\Sork.Funk.csproj", "{AA5CC783-46A0-42E4-9636-4C17D15A2F73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sork.Funk.Tests", "tests\Sork.Funk.Tests\Sork.Funk.Tests.csproj", "{05099D92-9FD0-4CF6-9A43-5C4FFCE04B9F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA5CC783-46A0-42E4-9636-4C17D15A2F73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA5CC783-46A0-42E4-9636-4C17D15A2F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA5CC783-46A0-42E4-9636-4C17D15A2F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA5CC783-46A0-42E4-9636-4C17D15A2F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05099D92-9FD0-4CF6-9A43-5C4FFCE04B9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05099D92-9FD0-4CF6-9A43-5C4FFCE04B9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05099D92-9FD0-4CF6-9A43-5C4FFCE04B9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05099D92-9FD0-4CF6-9A43-5C4FFCE04B9F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
