@@ -8,7 +8,7 @@ public abstract class Either<TLeft, TRight>
     public abstract TLeft Reduce(Func<TRight, TLeft> map);
 
     public abstract Either<TRight, TLeft> Swap();
-    public abstract TResult Fold<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right);
+    public abstract TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right);
 }
 
 public sealed class Left<TLeft, TRight> : Either<TLeft, TRight>
@@ -28,7 +28,7 @@ public sealed class Left<TLeft, TRight> : Either<TLeft, TRight>
     
     public override TLeft Reduce(Func<TRight, TLeft> map) => _value;
     public override Either<TRight, TLeft> Swap() => new Right<TRight, TLeft>(_value);
-    public override TResult Fold<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
+    public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
     {
         return left(_value);
     }
@@ -51,7 +51,7 @@ public sealed class Right<TLeft, TRight> : Either<TLeft, TRight>
 
     public override TLeft Reduce(Func<TRight, TLeft> map) => map(_value);
     public override Either<TRight, TLeft> Swap() => new Left<TRight, TLeft>(_value);
-    public override TResult Fold<TResult>(Func<TLeft, TResult> fold, Func<TRight, TResult> right)
+    public override TResult Match<TResult>(Func<TLeft, TResult> fold, Func<TRight, TResult> right)
     {
         return right(_value);
     }

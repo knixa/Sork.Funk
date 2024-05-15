@@ -43,4 +43,16 @@ public class OptionTest
         var newOption = option.Bind(x => Option<string>.Some($"Value: {x}"));
         Assert.True(newOption.IsNone);
     }
+
+    [Fact]
+    public void Some_WithNullInput_ShouldThrow()
+    {
+        Assert.Throws<ArgumentNullException>( ()=> Option<string>.Some(null));
+        Assert.Throws<ArgumentNullException>( ()=> Option<int?>.Some(null));
+        Assert.Throws<ArgumentNullException>( ()=> Option<bool?>.Some(null));
+        Assert.Throws<ArgumentNullException>( ()=> Option<TestClass>.Some(null));
+        Assert.Throws<ArgumentNullException>( ()=> Option<TestStruct?>.Some(null));
+    } 
+    private struct TestStruct{}
+    private class TestClass{}
 }

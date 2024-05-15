@@ -3,7 +3,7 @@ using System.Diagnostics.Contracts;
 
 namespace Sork.Funk;
 
-public readonly record struct Option<T>
+public readonly record struct Option<T> where T : notnull
 {
     private readonly T? _value;
     private readonly bool _isSome;
@@ -25,6 +25,7 @@ public readonly record struct Option<T>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
     public static Option<T> Some([DisallowNull] T value)
     {
+        //TODO: handle boxing of value types
         ArgumentNullException.ThrowIfNull(value);
         return new Option<T>(value);
     }
@@ -39,21 +40,20 @@ public readonly record struct Option<T>
     /// <returns>An option containing the mapped value.</returns>
     /// <remarks>If this option is None, the result will also be None.</remarks>
     [Pure]
-    public Option<TNew> Map<TNew>(Func<T, TNew> map) =>
-#nullable disable
+    public Option<TNew> Map<TNew>(Func<T, TNew> map) where TNew : notnull =>
         _isSome
-            ? Option<TNew>.Some(map(_value))
+            ? Option<TNew>.Some(map(_value!))
             : default;
-#nullable enable
+
     /// <summary>
-    /// Binds the current value to a new option of type <typeparamref name="TN"/>.
+    /// Binds the current value to a new option of type <typeparamref name="TNew"/>.
     /// </summary>
-    /// <typeparam name="TN">The type of the new option's value.</typeparam>
+    /// <typeparam name="TNew">The type of the new option's value.</typeparam>
     /// <param name="bind">A function that produces a new option based on the current value.</param>
     /// <returns>The resulting option after binding.</returns>
     /// <remarks>If this option is None, the result will also be None.</remarks>
     [Pure]
-    public Option<TN> Bind<TN>(Func<T, Option<TN>> bind) =>
+    public Option<TNew> Bind<TNew>(Func<T, Option<TNew>> bind) where TNew : notnull=>
         _isSome
             ? bind(_value!)
             : default;

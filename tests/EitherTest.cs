@@ -51,7 +51,7 @@ public class EitherTest
         var result = right.MapRight(mapFunction);
 
         Assert.IsType<Right<int, string>>(result);
-        Assert.Equal("TEST", result.Fold(x => "failure", x => x));
+        Assert.Equal("TEST", result.Match(x => "failure", x => x));
     }
 
     [Fact]
