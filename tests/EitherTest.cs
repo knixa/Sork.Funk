@@ -6,24 +6,23 @@ public class EitherTest
 {
 
     [Fact]
-    public void MapLeft_OnLeftInstance_ShouldApplyFunction()
+    public void Map_OnRightInstance_ShouldApplyFunction()
     {
-        var left = new Left<int, string>(10);
+        var right = new Right<string, int>(10);
         double Halve(int x) => x / 2.0;
 
-        var result = left.MapLeft(Halve);
+        var result = right.Map(Halve);
 
-        Assert.IsType<Left<double, string>>(result);
-        var leftResult = (Left<double, string>)result;
-        Assert.Equal(5.0, leftResult.Reduce(s => 0.0));
+        Assert.IsType<Right<string, double>>(result);
+        Assert.Equal(5.0, result.Match(l => -0, r => r));
     }
 
     [Fact]
-    public void MapRight_OnLeftInstance_ShouldNotApplyFunction()
+    public void Map_OnLeftInstance_ShouldNotApplyFunction()
     {
         var left = new Left<int, string>(10);
 
-        var result = left.MapRight(s => s.ToUpper());
+        var result = left.Map(s => s.ToUpper());
 
         Assert.IsType<Left<int, string>>(result);
         var leftResult = (Left<int, string>)result;
@@ -41,37 +40,51 @@ public class EitherTest
     }
 
     [Fact]
-    public void MapRight_OnRightInstance_ShouldApplyFunction()
+    public void MapToUpper_OnRightInstance_ShouldApplyFunction()
     {
         var right = new Right<int, string>("test");
 
-        var result = right.MapRight(s => s.ToUpper());
+        var result = right.Map(s => s.ToUpper());
 
         Assert.IsType<Right<int, string>>(result);
         Assert.Equal("TEST", result.Match(x => "failure", x => x));
     }
 
     [Fact]
-    public void MapLeft_OnRight_ShouldReduceToRight()
+    public void Reduce_OnLeft_ShouldReturnLeft()
     {
-        var right = new Right<int, string>("test");
+        var first = new Left<string, string>("test");
+        var second = new Left<int, int[]>(-1);
 
-        var result = right.MapLeft(x => $"Failed with {x}").Reduce(s => s);
+        Assert.Equal("test", first.Reduce(x => x.ToUpper()));
+        Assert.Equal(-1, second.Reduce(r => r.Sum()));
+    }
+
+    [Fact]
+    public void ReduceOnRight_ShouldReturnReduce()
+    {
+        var first = new Right<string, string>("test");
+        var second = new Right<int, int[]>([1, 2, 3, 4, 5]);
         
-        Assert.Equal("test", result);
+        Assert.Equal("TEST", first.Reduce(x => x.ToUpper()));
+        Assert.Equal(15, second.Reduce(r => r.Sum()));
+
     }
 
     [Fact]
     public void Comparison_WithEqualData_ShouldBeEqual()
     {
-        var left1 = new Left<int, string>(20);
-        var left2 = new Left<int, string>(20);
-        var right1 = new Right<int, string>("test");
-        var right2 = new Right<int, string>("test");
+        var left1 = GetLeft<int, string>(20);
+        var left2 = GetLeft<int, string>(20);
+        var right1 = GetRight<int, string>("test");
+        var right2 = GetRight<int, string>("test");
         
         Assert.Equal(left1, left2);
         Assert.Equal(right1, right2);
     }
+
+    internal static Either<L, R> GetLeft<L, R>(L val) => val;
+    internal static Either<L, R> GetRight<L, R>(R val) => val; 
 
     [Fact]
     public void Comparison_WithDifferentData_ShouldNotBeEqual()
