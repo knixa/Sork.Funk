@@ -63,4 +63,29 @@ public class EitherTest
         
         Assert.Equal("test", result);
     }
+
+    [Fact]
+    public void Comparison_WithEqualData_ShouldBeEqual()
+    {
+        var left1 = new Left<int, string>(20);
+        var left2 = new Left<int, string>(20);
+        var right1 = new Right<int, string>("test");
+        var right2 = new Right<int, string>("test");
+        
+        Assert.Equal(left1, left2);
+        Assert.Equal(right1, right2);
+    }
+
+    [Fact]
+    public void Comparison_WithDifferentData_ShouldNotBeEqual()
+    {
+        Either<int, string> left1 = new Left<int, string>(2);
+        Either<int,string> left2 = new Left<int, string>(3);
+        Either<int, string> right1 = new Right<int, string>("test");
+        Either<int,string> right2 = new Right<int, string>("testtest");
+        
+        Assert.NotEqual(left1, left2);
+        Assert.NotEqual(right1, right2);
+        Assert.NotEqual(left1, right2);
+    }
 }

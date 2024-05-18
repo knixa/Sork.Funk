@@ -1,57 +1,57 @@
 ﻿namespace Sork.Funk;
 
-public abstract class Either<TLeft, TRight>
+public abstract record Either<TL, TR>
 {
 
-    public abstract Either<TNewLeft, TRight> MapLeft<TNewLeft>(Func<TLeft, TNewLeft> map);
-    public abstract Either<TLeft, TNewRight> MapRight<TNewRight>(Func<TRight, TNewRight> map);
-    public abstract TLeft Reduce(Func<TRight, TLeft> map);
+    public abstract Either<TNewL, TR> MapLeft<TNewL>(Func<TL, TNewL> map);
+    public abstract Either<TL, TNewR> MapRight<TNewR>(Func<TR, TNewR> map);
+    public abstract TL Reduce(Func<TR, TL> map);
 
-    public abstract Either<TRight, TLeft> Swap();
-    public abstract TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right);
+    public abstract Either<TR, TL> Swap();
+    public abstract TResult Match<TResult>(Func<TL, TResult> left, Func<TR, TResult> right);
 }
 
-public sealed class Left<TLeft, TRight> : Either<TLeft, TRight>
+public sealed record Left<TL, TR> : Either<TL, TR>
 {
-    private readonly TLeft _value;
+    private readonly TL _value;
 
-    public Left(TLeft value)
+    public Left(TL value)
     {
         _value = value;
     }
 
-    public override Either<TNewLeft, TRight> MapLeft<TNewLeft>(Func<TLeft, TNewLeft> map) =>
-        new Left<TNewLeft, TRight>(map(_value));
+    public override Either<TNewL, TR> MapLeft<TNewL>(Func<TL, TNewL> map) =>
+        new Left<TNewL, TR>(map(_value));
 
-    public override Either<TLeft, TNewRight> MapRight<TNewRight>(Func<TRight, TNewRight> map) =>
-        new Left<TLeft, TNewRight>(_value);
+    public override Either<TL, TNewR> MapRight<TNewR>(Func<TR, TNewR> map) =>
+        new Left<TL, TNewR>(_value);
     
-    public override TLeft Reduce(Func<TRight, TLeft> map) => _value;
-    public override Either<TRight, TLeft> Swap() => new Right<TRight, TLeft>(_value);
-    public override TResult Match<TResult>(Func<TLeft, TResult> left, Func<TRight, TResult> right)
+    public override TL Reduce(Func<TR, TL> map) => _value;
+    public override Either<TR, TL> Swap() => new Right<TR, TL>(_value);
+    public override TResult Match<TResult>(Func<TL, TResult> left, Func<TR, TResult> right)
     {
         return left(_value);
     }
 }
 
-public sealed class Right<TLeft, TRight> : Either<TLeft, TRight>
+public sealed record Right<TL, TR> : Either<TL, TR>
 {
-    private readonly TRight _value;
+    private readonly TR _value;
 
-    public Right(TRight value)
+    public Right(TR value)
     {
         _value = value;
     }
 
-    public override Either<TNewLeft, TRight> MapLeft<TNewLeft>(Func<TLeft, TNewLeft> map) =>
-        new Right<TNewLeft, TRight>(_value);
+    public override Either<TNewL, TR> MapLeft<TNewL>(Func<TL, TNewL> map) =>
+        new Right<TNewL, TR>(_value);
 
-    public override Either<TLeft, TNewRight> MapRight<TNewRight>(Func<TRight, TNewRight> map) =>
-        new Right<TLeft, TNewRight>(map(_value));
+    public override Either<TL, TNewR> MapRight<TNewR>(Func<TR, TNewR> map) =>
+        new Right<TL, TNewR>(map(_value));
 
-    public override TLeft Reduce(Func<TRight, TLeft> map) => map(_value);
-    public override Either<TRight, TLeft> Swap() => new Left<TRight, TLeft>(_value);
-    public override TResult Match<TResult>(Func<TLeft, TResult> fold, Func<TRight, TResult> right)
+    public override TL Reduce(Func<TR, TL> map) => map(_value);
+    public override Either<TR, TL> Swap() => new Left<TR, TL>(_value);
+    public override TResult Match<TResult>(Func<TL, TResult> fold, Func<TR, TResult> right)
     {
         return right(_value);
     }

@@ -25,7 +25,7 @@ public readonly record struct Option<T> where T : notnull
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
     public static Option<T> Some([DisallowNull] T value)
     {
-        //TODO: handle boxing of value types
+        //TODO: handle boxing of value types, check if it's a reference type somehow, or a nullable struct? 
         ArgumentNullException.ThrowIfNull(value);
         return new Option<T>(value);
     }
