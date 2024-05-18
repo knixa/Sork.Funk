@@ -9,9 +9,9 @@ public class EitherTest
     public void MapLeft_OnLeftInstance_ShouldApplyFunction()
     {
         var left = new Left<int, string>(10);
-        Func<int, double> mapFunction = x => x / 2.0;
+        double Halve(int x) => x / 2.0;
 
-        var result = left.MapLeft(mapFunction);
+        var result = left.MapLeft(Halve);
 
         Assert.IsType<Left<double, string>>(result);
         var leftResult = (Left<double, string>)result;
@@ -22,9 +22,8 @@ public class EitherTest
     public void MapRight_OnLeftInstance_ShouldNotApplyFunction()
     {
         var left = new Left<int, string>(10);
-        Func<string, string> mapFunction = s => s.ToUpper();
 
-        var result = left.MapRight(mapFunction);
+        var result = left.MapRight(s => s.ToUpper());
 
         Assert.IsType<Left<int, string>>(result);
         var leftResult = (Left<int, string>)result;
@@ -35,9 +34,8 @@ public class EitherTest
     public void Reduce_OnRightInstance_ShouldApplyFunction()
     {
         var right = new Right<int, string>("test");
-        Func<string, int> mapFunction = s => s.Length;
 
-        var result = right.Reduce(mapFunction);
+        var result = right.Reduce(s => s.Length);
 
         Assert.Equal(4, result);
     }
@@ -46,9 +44,8 @@ public class EitherTest
     public void MapRight_OnRightInstance_ShouldApplyFunction()
     {
         var right = new Right<int, string>("test");
-        Func<string, string> mapFunction = s => s.ToUpper();
 
-        var result = right.MapRight(mapFunction);
+        var result = right.MapRight(s => s.ToUpper());
 
         Assert.IsType<Right<int, string>>(result);
         Assert.Equal("TEST", result.Match(x => "failure", x => x));
