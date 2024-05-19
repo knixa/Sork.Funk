@@ -6,15 +6,15 @@ namespace Sork.Funk;
 public readonly record struct Option<T> where T : notnull
 {
     private readonly T? _value;
-    private readonly bool _isSome;
 
-    [Pure] public bool IsSome => _isSome;
-    [Pure] public bool IsNone => !_isSome;
+    [Pure] public bool IsSome { get; }
+
+    [Pure] public bool IsNone => !IsSome;
 
     private Option(T value)
     {
         _value = value;
-        _isSome = true;
+        IsSome = true;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public readonly record struct Option<T> where T : notnull
     /// <remarks>If this option is None, the result will also be None.</remarks>
     [Pure]
     public Option<TNew> Map<TNew>(Func<T, TNew> map) where TNew : notnull =>
-        _isSome
+        IsSome
             ? Option<TNew>.Some(map(_value!))
             : default;
 
@@ -54,7 +54,7 @@ public readonly record struct Option<T> where T : notnull
     /// <remarks>If this option is None, the result will also be None.</remarks>
     [Pure]
     public Option<TNew> Bind<TNew>(Func<T, Option<TNew>> bind) where TNew : notnull=>
-        _isSome
+        IsSome
             ? bind(_value!)
             : default;
 
@@ -67,7 +67,7 @@ public readonly record struct Option<T> where T : notnull
     /// <returns>The result of applying the appropriate delegate.</returns>
     [Pure]
     public TRes Match<TRes>(Func<T, TRes> some, Func<TRes> none) =>
-        _isSome
+        IsSome
             ? some(_value!)
             : none();
 }
