@@ -36,4 +36,7 @@ public abstract record Either<TL, TR>
 
     [Pure]
     public static implicit operator Either<TL, TR>(TR value) => new Either.Right<TL, TR>(value);
+
+    [Pure]
+    public abstract Either<TNewL, TNewR> BiMap<TNewL, TNewR>(Func<TL, TNewL> left, Func<TR, TNewR> right);
 }

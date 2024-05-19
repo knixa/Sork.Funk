@@ -147,4 +147,19 @@ public class EitherTest
         Assert.Equal("test", new Either.Right<Exception, string>("TEST").Map(x => x.ToLower()).IfLeft("WRONGVALUE"));
         Assert.Equal(32, new Either.Right<string, int>(32).IfLeft(ReturnRandom));
     }
+
+    [Fact]
+    public void BiMap_OnLeft_ShouldReturnNewLeftData()
+    {
+       Assert.Equal(4, Either<Exception, string>.Left(new Exception())
+           .BiMap(l => 4, r => 7.0).Reduce(x => (int)x)); 
+    }
+
+    [Fact]
+    public void BiMap_OnRight_ShouldReduceNewRightData()
+    {
+       Assert.Equal("TEST", 
+           Either<Exception, double>.Right(4.0)
+           .BiMap(l => l.Message, r => "test").Reduce(f => f.ToUpper())); 
+    }
 }
