@@ -1,4 +1,4 @@
-﻿using Sork.Funk;
+﻿using Microsoft.VisualBasic.CompilerServices;
 using System.ComponentModel.Design;
 
 namespace Sork.Funk.Tests;
@@ -8,41 +8,40 @@ public class OptionTest
     [Fact]
     public void Some_Value_ReturnsIsSomeTrue()
     {
-        var value = 42;
-        var option = Option<int>.Some(value);
-        Assert.True(option.IsSome);
+         Option<int>.Some(42).IsSome.Should().BeTrue();
     }
 
     [Fact]
     public void None_ReturnsIsNoneTrue()
     {
-        var option = Option<int>.None;
-        Assert.True(option.IsNone);
+        Option<int>.None.IsNone.Should().BeTrue();
     }
 
     [Fact]
     public void Map_SomeValue_ReturnsMappedValue()
     {
-        var option = Option<int>.Some(10);
-        var mappedOption = option.Map(x => x * 2);
-        Assert.Equal(20, mappedOption.Match(x => x, () => 0));
+        Option<int>.Some(10)
+            .Map(x => x * 2)
+            .Match(some => some, () => -100)
+            .Should().BePositive()
+            .And.Be(20);
     }
 
     [Fact]
     public void Bind_SomeValue_ReturnsNewOption()
     {
-        var option = Option<int>.Some(5);
-        var newOption = option.Bind(x => Option<string>.Some($"Value: {x}"));
-        Assert.True(newOption.IsSome);
-        Assert.Equal("Value: 5", newOption.Match(s => s, () => ""));
+        Option<int>.Some(5)
+            .Bind(x => Option<string>.Some($"{x}"))
+            .Match(some => some, () => "ALL WRONG")
+            .Should().Be("5");
     }
 
     [Fact]
     public void Bind_None_ReturnsNone()
     {
-        var option = Option<int>.None;
-        var newOption = option.Bind(x => Option<string>.Some($"Value: {x}"));
-        Assert.True(newOption.IsNone);
+        Option<int>.None.Map(x => x * 100)
+            .IsNone
+            .Should().BeTrue();
     }
 
     [Fact]
@@ -58,17 +57,18 @@ public class OptionTest
     [Fact]
     public void Some_WithString_ShouldEitherRight()
     {
-        Assert.Equal("test", Option<string>.Some("test")
+        Option<string>.Some("test")
             .ToEither(() => new Exception())
-            .Match(l => l.Message, r => r));
+            .Match(l => l.Message, r => r)
+            .Should().Be("test");
     }
 
     [Fact]
     public void Some_WithNone_ShouldEitherLeft()
     {
-        Assert.IsType<NullReferenceException>(Option<int>.None
-            .ToEither(() => new NullReferenceException())
-            .Reduce(f => throw new CheckoutException()));
+        Option<int>.None.ToEither(() => new NullReferenceException())
+            .Reduce(f => throw new AggregateException())
+            .Should().BeOfType<NullReferenceException>();
     }
     
     private struct TestStruct{}
