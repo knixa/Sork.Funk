@@ -53,7 +53,7 @@ public readonly record struct Option<T> where T : notnull
     /// <returns>The resulting option after binding.</returns>
     /// <remarks>If this option is None, the result will also be None.</remarks>
     [Pure]
-    public Option<TNew> Bind<TNew>(Func<T, Option<TNew>> bind) where TNew : notnull=>
+    public Option<TNew> Bind<TNew>(Func<T, Option<TNew>> bind) where TNew : notnull =>
         IsSome
             ? bind(_value!)
             : default;
@@ -70,4 +70,7 @@ public readonly record struct Option<T> where T : notnull
         IsSome
             ? some(_value!)
             : none();
+
+    public Either<TL, T> ToEither<TL>(Func<TL> func) =>
+        IsSome ? Either<TL, T>.Right(_value!) : Either<TL, T>.Left(func());
 }

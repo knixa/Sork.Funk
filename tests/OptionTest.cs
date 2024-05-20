@@ -1,4 +1,5 @@
 ﻿using Sork.Funk;
+using System.ComponentModel.Design;
 
 namespace Sork.Funk.Tests;
 
@@ -52,7 +53,24 @@ public class OptionTest
         Assert.Throws<ArgumentNullException>( ()=> Option<bool?>.Some(null));
         Assert.Throws<ArgumentNullException>( ()=> Option<TestClass>.Some(null));
         Assert.Throws<ArgumentNullException>( ()=> Option<TestStruct?>.Some(null));
-    } 
+    }
+
+    [Fact]
+    public void Some_WithString_ShouldEitherRight()
+    {
+        Assert.Equal("test", Option<string>.Some("test")
+            .ToEither(() => new Exception())
+            .Match(l => l.Message, r => r));
+    }
+
+    [Fact]
+    public void Some_WithNone_ShouldEitherLeft()
+    {
+        Assert.IsType<NullReferenceException>(Option<int>.None
+            .ToEither(() => new NullReferenceException())
+            .Reduce(f => throw new CheckoutException()));
+    }
+    
     private struct TestStruct{}
     private class TestClass{}
 }
