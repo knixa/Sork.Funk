@@ -7,92 +7,83 @@ public class EitherTest
     [Fact]
     public void Map_OnRightInstance_ShouldApplyFunction()
     {
-        var right = new Either.Right<string, int>(10);
-        double Halve(int x) => x / 2.0;
-
-        var result = right.Map(Halve);
-
-        Assert.IsType<Either.Right<string, double>>(result);
-        Assert.Equal(5.0, result.Match(l => -0, r => r));
+        Either<string, int>.Right(10)
+            .Map(x => x * 2.0)
+            .Match(l => -0, r => r)
+            .Should().Be(20);
     }
 
     [Fact]
     public void Map_OnLeftInstance_ShouldNotApplyFunction()
     {
-        var left = new Either.Left<int, string>(10);
-
-        var result = left.Map(s => s.ToUpper());
-
-        Assert.IsType<Either.Left<int, string>>(result);
-        var leftResult = (Either.Left<int, string>)result;
-        Assert.Equal(10, leftResult.Reduce(s => 0));
+        Either<int, string>.Left(10)
+            .Map(s => s.ToUpper())
+            .Reduce(s => -100)
+            .Should().Be(10);
     }
 
     [Fact]
     public void Reduce_OnRightInstance_ShouldApplyFunction()
     {
-        var right = new Either.Right<int, string>("test");
-
-        var result = right.Reduce(s => s.Length);
-
-        Assert.Equal(4, result);
+        Either<int, string>.Right("test")
+            .Reduce(s => s.Length)
+            .Should().Be(4);
     }
 
     [Fact]
     public void MapToUpper_OnRightInstance_ShouldApplyFunction()
     {
-        var right = new Either.Right<int, string>("test");
-
-        var result = right.Map(s => s.ToUpper());
-
-        Assert.IsType<Either.Right<int, string>>(result);
-        Assert.Equal("TEST", result.Match(x => "failure", x => x));
+        Either<int, string>.Right("test")
+            .Map(s => s.ToUpper())
+            .Match(l => "failure", r => r)
+            .Should().Be("TEST");
     }
 
     [Fact]
     public void Reduce_OnLeft_ShouldReturnLeft()
     {
-        var first = new Either.Left<string, string>("test");
-        var second = new Either.Left<int, int[]>(-1);
+        Either<string, string>.Left("test")
+            .Reduce(s => s.ToUpper())
+            .Should().Be("test");
 
-        Assert.Equal("test", first.Reduce(x => x.ToUpper()));
-        Assert.Equal(-1, second.Reduce(r => r.Sum()));
+        Either<int, int[]>.Left(-10)
+            .Reduce(r => r.Sum())
+            .Should().Be(-10);
     }
 
     [Fact]
     public void Match_OnLeft_ShouldNotApplyFunction()
     {
-        Assert.Equal("test",
-            new Either.Left<string, string>("test")
+        Either<string, string>.Left("test")
             .Map(s => s.ToUpper())
-            .Match(f => f, f => f));
+            .Match(f => f, f => f)
+            .Should().Be("test");
     }
 
     [Fact]
     public void Match_OnRight_ShouldApplyFunction()
     {
-        Assert.Equal(10, 
-            new Either.Right<int, int>(5)
-                .Map(i => i * 2)
-                .Match(l => l, r => r));
+        new Either.Right<int, int>(5)
+            .Map(i => i * 2)
+            .Match(l => l, r => r).Should().Be(10);
     }
 
     [Fact]
     public void ReduceOnRight_ShouldReturnReduce()
     {
-        var first = new Either.Right<string, string>("test");
-        var second = new Either.Right<int, int[]>([1, 2, 3, 4, 5]);
+        new Either.Right<string, string>("test").Reduce(s => s.ToUpper()).Should().Be("TEST");
+        new Either.Right<int, int[]>([1, 2, 3, 4, 5]).Reduce(r => r.Sum()).Should().Be(15);
 
-        Assert.Equal("TEST", first.Reduce(x => x.ToUpper()));
-        Assert.Equal(15, second.Reduce(r => r.Sum()));
     }
 
     [Fact]
     public void Swap_OnRight_ShouldReduceRightValue()
     {
-        var right = new Either.Right<int, string>("test");
-
-        Assert.Equal("TEST", right.Map(s => s.ToUpper()).Swap().Reduce(x => "should not match"));
+        Either<int, string>.Right("test")
+            .Map(s => s.ToUpper())
+            .Swap()
+            .Reduce(x => "should not match")
+            .Should().Be("TEST");
     }
 
     [Fact]
@@ -137,7 +128,7 @@ public class EitherTest
     {
         string ReturnTest() => "test";
         Assert.Equal(4, Either<Exception, int>.Left(new Exception()).IfLeft(4));
-        Assert.Equal("test", Either<int, string>.Left(4).IfLeft(ReturnTest)); 
+        Assert.Equal("test", Either<int, string>.Left(4).IfLeft(ReturnTest));
     }
 
     [Fact]
@@ -151,15 +142,15 @@ public class EitherTest
     [Fact]
     public void BiMap_OnLeft_ShouldReturnNewLeftData()
     {
-       Assert.Equal(4, Either<Exception, string>.Left(new Exception())
-           .BiMap(l => 4, r => 7.0).Reduce(x => (int)x)); 
+        Assert.Equal(4, Either<Exception, string>.Left(new Exception())
+            .BiMap(l => 4, r => 7.0).Reduce(x => (int)x));
     }
 
     [Fact]
     public void BiMap_OnRight_ShouldReduceNewRightData()
     {
-       Assert.Equal("TEST", 
-           Either<Exception, double>.Right(4.0)
-           .BiMap(l => l.Message, r => "test").Reduce(f => f.ToUpper())); 
+        Assert.Equal("TEST",
+            Either<Exception, double>.Right(4.0)
+                .BiMap(l => l.Message, r => "test").Reduce(f => f.ToUpper()));
     }
 }
