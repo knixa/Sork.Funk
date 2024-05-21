@@ -47,11 +47,11 @@ public class OptionTest
     [Fact]
     public void Some_WithNullInput_ShouldThrow()
     {
-        Assert.Throws<ArgumentNullException>( ()=> Option<string>.Some(null));
-        Assert.Throws<ArgumentNullException>( ()=> Option<int?>.Some(null));
-        Assert.Throws<ArgumentNullException>( ()=> Option<bool?>.Some(null));
-        Assert.Throws<ArgumentNullException>( ()=> Option<TestClass>.Some(null));
-        Assert.Throws<ArgumentNullException>( ()=> Option<TestStruct?>.Some(null));
+        Assert.Throws<NullReferenceException>( ()=> Option<string>.Some(null).Map(x => x.Length));
+        Assert.Throws<InvalidOperationException>( ()=> Option<int?>.Some(null).Map(x => x.Value));
+        Assert.Throws<InvalidOperationException>( ()=> Option<bool?>.Some(null).Map(x => x.Value));
+        Assert.Throws<NullReferenceException>( ()=> Option<TestClass>.Some(null).Map(x => x.GetType().Name));
+        Assert.Throws<InvalidOperationException>( ()=> Option<TestStruct?>.Some(null).Map(x => x.Value));
     }
 
     [Fact]

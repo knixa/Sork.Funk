@@ -22,11 +22,8 @@ public readonly record struct Option<T> where T : notnull
     /// </summary>
     /// <param name="value">The non-null value to wrap in an option.</param>
     /// <returns>An option containing the specified value.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> is null.</exception>
     public static Option<T> Some([DisallowNull] T value)
     {
-        //TODO: handle boxing of value types, check if it's a reference type somehow, or a nullable struct? 
-        ArgumentNullException.ThrowIfNull(value);
         return new Option<T>(value);
     }
 
