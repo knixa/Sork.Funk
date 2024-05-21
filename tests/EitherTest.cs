@@ -121,6 +121,10 @@ public class EitherTest
         Assert.NotEqual(left1, left2);
         Assert.NotEqual(right1, right2);
         Assert.NotEqual(left1, right2);
+        right1.IsRight.Should().BeTrue();
+        left1.IsLeft.Should().BeTrue();
+        right2.IsLeft.Should().BeFalse();
+        left2.IsRight.Should().BeFalse();
     }
 
     [Fact]
@@ -153,4 +157,5 @@ public class EitherTest
             Either<Exception, double>.Right(4.0)
                 .BiMap(l => l.Message, r => "test").Reduce(f => f.ToUpper()));
     }
+    
 }

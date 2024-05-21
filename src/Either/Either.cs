@@ -29,8 +29,6 @@ public abstract record Either<TL, TR>
     [Pure]
     public abstract TResult Match<TResult>(Func<TL, TResult> left, Func<TR, TResult> right);
 
-    public abstract void Match(Action<TL> left, Action<TR> right);
-    
     [Pure]
     public static implicit operator Either<TL, TR>(TL value) => new Either.Left<TL, TR>(value);
 

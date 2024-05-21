@@ -25,8 +25,6 @@ public static partial class Either
         [Pure]
         public override TResult Match<TResult>(Func<TL, TResult> left, Func<TR, TResult> right) => right(Value);
 
-        public override void Match(Action<TL> left, Action<TR> right) => right(Value);
-
         [Pure]
         public override Either<TNewL, TNewR> BiMap<TNewL, TNewR>(Func<TL, TNewL> left, Func<TR, TNewR> right) =>
             new Right<TNewL, TNewR>(right(Value));
