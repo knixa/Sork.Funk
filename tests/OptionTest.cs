@@ -47,11 +47,13 @@ public class OptionTest
     [Fact]
     public void Some_WithNullInput_ShouldThrow()
     {
-        Assert.Throws<NullReferenceException>( ()=> Option<string>.Some(null).Map(x => x.Length));
-        Assert.Throws<InvalidOperationException>( ()=> Option<int?>.Some(null).Map(x => x.Value));
-        Assert.Throws<InvalidOperationException>( ()=> Option<bool?>.Some(null).Map(x => x.Value));
-        Assert.Throws<NullReferenceException>( ()=> Option<TestClass>.Some(null).Map(x => x.GetType().Name));
-        Assert.Throws<InvalidOperationException>( ()=> Option<TestStruct?>.Some(null).Map(x => x.Value));
+        #nullable disable
+        Assert.Throws<NullReferenceException>( ()=> Option<string>.Some(null!).Map(x => x.Length));
+        Assert.Throws<InvalidOperationException>( ()=> Option<int?>.Some(null!).Map(x => x!.Value));
+        Assert.Throws<InvalidOperationException>( ()=> Option<bool?>.Some(null!).Map(x => x!.Value));
+        Assert.Throws<NullReferenceException>( ()=> Option<TestClass>.Some(null!).Map(x => x.GetType().Name));
+        Assert.Throws<InvalidOperationException>( ()=> Option<TestStruct?>.Some(null!).Map(x => x!.Value));
+        #nullable enable
     }
 
     [Fact]
