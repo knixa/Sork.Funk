@@ -5,5 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>Sork.Funk</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/Atkinstinkmoore/Sork.Funk</PackageProjectUrl>
+        <Description>Small library for functional types</Description>
+        <PackageTags>functional</PackageTags>
+    </PropertyGroup>
 
 </Project>
