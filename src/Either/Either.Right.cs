@@ -15,6 +15,8 @@ public static partial class Either
         public override TR IfLeft(Func<TR> map) => Value;
 
         public override TR IfLeft(TR value) => Value;
+        public override TL IfRight(Func<TL> map) => map();
+        public override TL IfRight(TL value) => value;
 
         [Pure]
         public override TL Reduce(Func<TR, TL> map) => map(Value);

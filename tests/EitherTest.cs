@@ -157,5 +157,19 @@ public class EitherTest
             Either<Exception, double>.Right(4.0)
                 .BiMap(l => l.Message, r => "test").Reduce(f => f.ToUpper()));
     }
+
+    [Fact]
+    public void IfRight_OnRight_ShouldReturnProvidedData()
+    {
+        var data = new Random();
+        Either<Random, int>.Right(69).IfRight(data).Should().Be(data);
+    }
     
+    [Fact]
+    public void IfRight_OnRight_ShouldReturnProvidedFunctionData()
+    {
+        var data = new Random();
+        Random DataFunc() => data;
+        Either<Random, int>.Right(69).IfRight(DataFunc).Should().Be(data);
+    }
 }

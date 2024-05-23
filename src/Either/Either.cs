@@ -12,6 +12,7 @@ public abstract record Either<TL, TR>
 
     [Pure]
     public static Either<TL, TR> Right(TR value) => new Either.Right<TL, TR>(value);
+
     public abstract Either<TL, TNewR> Map<TNewR>(Func<TR, TNewR> map);
 
     [Pure]
@@ -19,7 +20,13 @@ public abstract record Either<TL, TR>
 
     [Pure]
     public abstract TR IfLeft(TR value);
-    
+
+    [Pure]
+    public abstract TL IfRight(Func<TL> map);
+
+    [Pure]
+    public abstract TL IfRight(TL value);
+
     [Pure]
     public abstract TL Reduce(Func<TR, TL> map);
 
