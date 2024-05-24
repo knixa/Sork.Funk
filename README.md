@@ -6,7 +6,7 @@ The goal of this project is to provide a practical and hands-on approach to unde
 ## Overview
 
 The library currently includes implementations of fundamental functional programming constructs such as `Option<T>` and `Either<TL, TR>`.<br/>
-These constructs are used to handle optional values and represent computations that can result in two different types, respectively.
+These types are used to handle optional values and represent computations that can result in two different types, respectively.
 
 - **Option<T>**: This type represents an optional value, a value that might exist or not.
 
