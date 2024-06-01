@@ -5,7 +5,7 @@ namespace Sork.Funk;
 
 public readonly record struct Option<T> where T : notnull
 {
-    private readonly T? _value;
+    internal readonly T? Value;
 
     [Pure] public bool IsSome { get; }
 
@@ -13,7 +13,7 @@ public readonly record struct Option<T> where T : notnull
 
     private Option(T value)
     {
-        _value = value;
+        Value = value;
         IsSome = true;
     }
 
@@ -22,10 +22,7 @@ public readonly record struct Option<T> where T : notnull
     /// </summary>
     /// <param name="value">The non-null value to wrap in an option.</param>
     /// <returns>An option containing the specified value.</returns>
-    public static Option<T> Some([DisallowNull] T value)
-    {
-        return new Option<T>(value);
-    }
+    public static Option<T> Some([DisallowNull] T value) => new(value);
 
     public static readonly Option<T> None = default;
 
@@ -39,7 +36,7 @@ public readonly record struct Option<T> where T : notnull
     [Pure]
     public Option<TNew> Map<TNew>(Func<T, TNew> map) where TNew : notnull =>
         IsSome
-            ? Option<TNew>.Some(map(_value!))
+            ? Option<TNew>.Some(map(Value!))
             : default;
 
     /// <summary>
@@ -52,7 +49,7 @@ public readonly record struct Option<T> where T : notnull
     [Pure]
     public Option<TNew> Bind<TNew>(Func<T, Option<TNew>> bind) where TNew : notnull =>
         IsSome
-            ? bind(_value!)
+            ? bind(Value!)
             : default;
 
     /// <summary>
@@ -65,9 +62,9 @@ public readonly record struct Option<T> where T : notnull
     [Pure]
     public TRes Match<TRes>(Func<T, TRes> some, Func<TRes> none) =>
         IsSome
-            ? some(_value!)
+            ? some(Value!)
             : none();
 
     public Either<TL, T> ToEither<TL>(Func<TL> func) =>
-        IsSome ? Either<TL, T>.Right(_value!) : Either<TL, T>.Left(func());
+        IsSome ? Either<TL, T>.Right(Value!) : Either<TL, T>.Left(func());
 }
