@@ -63,7 +63,7 @@ public class EitherTest
     [Fact]
     public void Match_OnRight_ShouldApplyFunction()
     {
-        new Either.Right<int, int>(5)
+        Either<int, int>.Right(5)
             .Map(i => i * 2)
             .Match(l => l, r => r).Should().Be(10);
     }
@@ -71,8 +71,8 @@ public class EitherTest
     [Fact]
     public void ReduceOnRight_ShouldReturnReduce()
     {
-        new Either.Right<string, string>("test").Reduce(s => s.ToUpper()).Should().Be("TEST");
-        new Either.Right<int, int[]>([1, 2, 3, 4, 5]).Reduce(r => r.Sum()).Should().Be(15);
+        Either<string, string>.Right("test").Reduce(s => s.ToUpper()).Should().Be("TEST");
+        Either<int, int[]>.Right([1, 2, 3, 4, 5]).Reduce(r => r.Sum()).Should().Be(15);
 
     }
 
@@ -90,7 +90,7 @@ public class EitherTest
     public void Swap_OnLeft_ShouldReduceOriginalLeft()
     {
         Assert.Equal(2,
-            new Either.Left<Exception[], int>([new ArgumentException(), new ArithmeticException()])
+            Either<Exception[], int>.Left([new ArgumentException(), new ArithmeticException()])
                 .Swap()
                 .Reduce(f => f.Length));
     }
@@ -139,8 +139,8 @@ public class EitherTest
     public void IfLeft_OnRight_ShouldReturnRightData()
     {
         int ReturnRandom() => 69;
-        Assert.Equal("test", new Either.Right<Exception, string>("TEST").Map(x => x.ToLower()).IfLeft("WRONGVALUE"));
-        Assert.Equal(32, new Either.Right<string, int>(32).IfLeft(ReturnRandom));
+        Assert.Equal("test", Either<Exception, string>.Right("TEST").Map(x => x.ToLower()).IfLeft("WRONGVALUE"));
+        Assert.Equal(32, Either<string, int>.Right(32).IfLeft(ReturnRandom));
     }
 
     [Fact]

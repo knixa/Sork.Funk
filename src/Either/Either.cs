@@ -44,4 +44,7 @@ public abstract record Either<TL, TR>
 
     [Pure]
     public abstract Either<TNewL, TNewR> BiMap<TNewL, TNewR>(Func<TL, TNewL> left, Func<TR, TNewR> right);
+    
+    internal abstract TR RightValue { get; }
+    internal abstract TL LeftValue { get; }
 }

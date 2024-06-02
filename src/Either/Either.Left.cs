@@ -28,5 +28,8 @@ public static partial class Either
         [Pure]
         public override Either<TNewL, TNewR> BiMap<TNewL, TNewR>(Func<TL, TNewL> left, Func<TR, TNewR> right) =>
             new Left<TNewL, TNewR>(left(Value));
+        
+        internal override TR RightValue => throw new NotImplementedException(nameof(Either.Left<TL, TR>));
+        internal override TL LeftValue => Value;
     }
 }
