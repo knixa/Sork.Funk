@@ -32,6 +32,6 @@ public static partial class Either
             new Right<TNewL, TNewR>(right(Value));
 
         internal override TR RightValue => Value;
-        internal override TL LeftValue => throw new NotImplementedException(nameof(Either.Right<TL, TR>));
+        internal override TL LeftValue => throw new NotImplementedException(nameof(Right<TL, TR>));
     }
 }

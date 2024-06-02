@@ -7,7 +7,7 @@
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <PackageId>Sork.Funk</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
