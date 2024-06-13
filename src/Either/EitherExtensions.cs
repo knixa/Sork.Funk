@@ -1,4 +1,7 @@
-﻿namespace Sork.Funk;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+
+namespace Sork.Funk;
 
 public static class EitherExtensions
 {
@@ -9,6 +12,7 @@ public static class EitherExtensions
     /// <typeparam name="TR">The type of the right value.</typeparam>
     /// <param name="collection">The collection of Either objects.</param>
     /// <returns>An IEnumerable of left values where the Either object is a Left.</returns>
+    [Pure]
     public static IEnumerable<TL> UnwrapLeft<TL, TR>(this IEnumerable<Either<TL, TR>> collection) =>
         collection.Where(e => e.IsLeft).Select(l => l.LeftValue);
 
@@ -19,6 +23,7 @@ public static class EitherExtensions
     /// <typeparam name="TR">The type of the right value.</typeparam>
     /// <param name="collection">The collection of Either objects.</param>
     /// <returns>An IEnumerable of right values where the Either object is a Right.</returns>
+    [Pure]
     public static IEnumerable<TR> UnwrapRight<TL, TR>(this IEnumerable<Either<TL, TR>> collection) =>
         collection.Where(e => e.IsRight).Select(r => r.RightValue);
 }
