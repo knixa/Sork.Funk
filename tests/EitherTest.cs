@@ -1,4 +1,8 @@
-﻿using Sork.Funk;
+﻿using FsCheck;
+using FsCheck.Xunit;
+using Sork.Funk;
+using System.Diagnostics.CodeAnalysis;
+using Random = System.Random;
 
 namespace Sork.Funk.Tests;
 
@@ -63,13 +67,13 @@ public class EitherTest
         Either<int, int[]>.Right([1, 2, 3, 4, 5]).Reduce(r => r.Sum()).Should().Be(15);
     }
 
-    [Fact]
-    public void Swap_OnRight_ShouldReduceRightValue() =>
-        Either<int, string>.Right("test")
+    [Property]
+    public void Swap_OnRight_ShouldReduceRightValue(NonNull<string> val) =>
+        Either<int, string>.Right(val.Get)
             .Map(s => s.ToUpper())
             .Swap()
             .Reduce(x => "should not match")
-            .Should().Be("TEST");
+            .Should().Be(val.Get.ToUpper());
 
     [Fact]
     public void Swap_OnLeft_ShouldReduceOriginalLeft() =>
@@ -134,26 +138,26 @@ public class EitherTest
         Assert.Equal(32, Either<string, int>.Right(32).IfLeft(ReturnRandom));
     }
 
-    [Fact]
-    public void BiMap_OnLeft_ShouldReturnNewLeftData() =>
-        Assert.Equal(4, Either<Exception, string>.Left(new Exception())
-            .BiMap(l => 4, r => 7.0).Reduce(x => (int)x));
+    [Property]
+    public void BiMap_OnLeft_ShouldReturnNewLeftData(int num) =>
+        Assert.Equal(num, Either<Exception, string>.Left(new Exception())
+            .BiMap(l => num, r => 7.0).Reduce(x => (int)x));
 
-    [Fact]
-    public void BiMap_OnRight_ShouldReduceNewRightData() =>
-        Assert.Equal("TEST",
+    [Property]
+    public void BiMap_OnRight_ShouldReduceNewRightData(NonNull<string> val) =>
+        Assert.Equal(val.Get.ToUpper(),
             Either<Exception, double>.Right(4.0)
-                .BiMap(l => l.Message, r => "test").Reduce(f => f.ToUpper()));
+                .BiMap(l => l.Message, r => val.Get).Reduce(f => f.ToUpper()));
 
-    [Fact]
-    public void IfRight_OnRight_ShouldReturnProvidedData()
+    [Property]
+    public void IfRight_OnRight_ShouldReturnProvidedData(int num)
     {
         var data = new Random();
-        Either<Random, int>.Right(69).IfRight(data).Should().Be(data);
+        Either<Random, int>.Right(num).IfRight(data).Should().Be(data);
     }
 
-    [Fact]
-    public void IfRight_OnRight_ShouldReturnProvidedFunctionData()
+    [Property]
+    public void IfRight_OnRight_ShouldReturnProvidedFunctionData(int num)
     {
         var data = new Random();
 
@@ -162,6 +166,6 @@ public class EitherTest
             return data;
         }
 
-        Either<Random, int>.Right(69).IfRight(DataFunc).Should().Be(data);
+        Either<Random, int>.Right(num).IfRight(DataFunc).Should().Be(data);
     }
 }

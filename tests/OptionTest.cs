@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
-using System.ComponentModel.Design;
+﻿using FsCheck.Xunit;
 
 namespace Sork.Funk.Tests;
 
@@ -19,12 +18,12 @@ public class OptionTest
             .Should().BePositive()
             .And.Be(20);
 
-    [Fact]
-    public void Bind_SomeValue_ReturnsNewOption() =>
-        Option<int>.Some(5)
+    [Property]
+    public void Bind_SomeValue_ReturnsNewOption(int val) =>
+        Option<int>.Some(val)
             .Bind(x => Option<string>.Some($"{x}"))
             .Match(some => some, () => "ALL WRONG")
-            .Should().Be("5");
+            .Should().Be(val.ToString());
 
     [Fact]
     public void Bind_None_ReturnsNone() =>
@@ -44,18 +43,29 @@ public class OptionTest
 #nullable enable
     }
 
-    [Fact]
-    public void Some_WithString_ShouldEitherRight() =>
-        Option<string>.Some("test")
+    [Property]
+    public void Some_WithString_ShouldEitherRight(string val) =>
+        Option<string>.Some(val)
             .ToEither(() => new Exception())
             .Match(l => l.Message, r => r)
-            .Should().Be("test");
+            .Should().Be(val);
 
     [Fact]
     public void Some_WithNone_ShouldEitherLeft() =>
         Option<int>.None.ToEither(() => new NullReferenceException())
             .Reduce(f => throw new AggregateException())
             .Should().BeOfType<NullReferenceException>();
+
+    [Property]
+    public void IfNone_WithNone_ShouldReturnInput(int input) =>
+        Option<int>.None.IfNone(input)
+            .Should().Be(input);
+
+    [Property]
+    public void IfNone_WithSome_ShouldReturnSomeValue(int some, int x) =>
+        Option<int>.Some(some)
+            .IfNone(x)
+            .Should().Be(some);
 
     private struct TestStruct
     {
