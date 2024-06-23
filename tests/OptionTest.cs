@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
+﻿using FsCheck.Xunit;
+using Microsoft.VisualBasic.CompilerServices;
 using System.ComponentModel.Design;
 
 namespace Sork.Funk.Tests;
@@ -56,6 +57,17 @@ public class OptionTest
         Option<int>.None.ToEither(() => new NullReferenceException())
             .Reduce(f => throw new AggregateException())
             .Should().BeOfType<NullReferenceException>();
+
+    [Property]
+    public void IfNone_WithNone_ShouldReturnInput(int input) =>
+        Option<int>.None.IfNone(input)
+            .Should().Be(input);
+
+    [Property]
+    public void IfNone_WithSome_ShouldReturnSomeValue(int some, int assert) =>
+        Option<int>.Some(some)
+            .IfNone(assert)
+            .Should().Be(some);
 
     private struct TestStruct
     {
