@@ -1,5 +1,8 @@
-﻿using FsCheck.Xunit;
+﻿using FsCheck;
+using FsCheck.Xunit;
 using Sork.Funk;
+using System.Diagnostics.CodeAnalysis;
+using Random = System.Random;
 
 namespace Sork.Funk.Tests;
 
@@ -65,12 +68,12 @@ public class EitherTest
     }
 
     [Property]
-    public void Swap_OnRight_ShouldReduceRightValue(string val) =>
-        Either<int, string>.Right(val)
+    public void Swap_OnRight_ShouldReduceRightValue(NonNull<string> val) =>
+        Either<int, string>.Right(val.Get)
             .Map(s => s.ToUpper())
             .Swap()
             .Reduce(x => "should not match")
-            .Should().Be(val.ToUpper());
+            .Should().Be(val.Get.ToUpper());
 
     [Fact]
     public void Swap_OnLeft_ShouldReduceOriginalLeft() =>
@@ -141,10 +144,10 @@ public class EitherTest
             .BiMap(l => num, r => 7.0).Reduce(x => (int)x));
 
     [Property]
-    public void BiMap_OnRight_ShouldReduceNewRightData(string val) =>
-        Assert.Equal(val.ToUpper(),
+    public void BiMap_OnRight_ShouldReduceNewRightData(NonNull<string> val) =>
+        Assert.Equal(val.Get.ToUpper(),
             Either<Exception, double>.Right(4.0)
-                .BiMap(l => l.Message, r => val).Reduce(f => f.ToUpper()));
+                .BiMap(l => l.Message, r => val.Get).Reduce(f => f.ToUpper()));
 
     [Property]
     public void IfRight_OnRight_ShouldReturnProvidedData(int num)
