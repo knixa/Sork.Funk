@@ -7,12 +7,13 @@
         <WarningsAsErrors>nullable</WarningsAsErrors>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <RepositoryUrl>https://github.com/knixa/Sork.Funk</RepositoryUrl>
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageId>Sork.Funk</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/Atkinstinkmoore/Sork.Funk</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/knixa/Sork.Funk</PackageProjectUrl>
         <Description>Small library for functional types</Description>
         <PackageTags>functional</PackageTags>
     </PropertyGroup>
