@@ -9,7 +9,7 @@ using System.Linq;
 /// Represents a list that is guaranteed to contain at least one element.
 /// </summary>
 /// <typeparam name="T">The type of the elements in the list.</typeparam>
-public class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList<T> where T : IEquatable<T>
+public sealed class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList<T> where T : IEquatable<T>
 {
     private readonly T[] _list;
 
