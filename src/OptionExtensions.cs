@@ -28,15 +28,15 @@ public static class OptionExtensions
     /// This method ensures that if a <see cref="NonEmptyList{T}"/> is created, it will contain at least one element.
     /// </remarks>
     [Pure]
-    public static Option<NonEmptyList<T>> ToNonEmptyOption<T>(this IEnumerable<T>? collection)
+    public static Option<NonEmptyList<T>> ToNonEmptyOption<T>(this IEnumerable<T>? collection) where T : IEquatable<T>
     {
         if (collection is null)
         {
             return Option<NonEmptyList<T>>.None;
         }
 
-        var enumerable = collection.ToList();
-        return enumerable.Count == 0
+        var enumerable = collection.ToArray();
+        return enumerable.Length == 0
             ? Option<NonEmptyList<T>>.None
             : Option<NonEmptyList<T>>.Some(new NonEmptyList<T>(enumerable));
     }
