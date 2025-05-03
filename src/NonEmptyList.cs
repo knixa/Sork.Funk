@@ -9,13 +9,13 @@ using System.Linq;
 /// Represents a list that is guaranteed to contain at least one element.
 /// </summary>
 /// <typeparam name="T">The type of the elements in the list.</typeparam>
-public class NonEmptyList<T> : IReadOnlyList<T>
+public class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList<T> where T : IEquatable<T>
 {
-    private readonly List<T> _list;
+    private readonly T[] _list;
 
-    internal NonEmptyList(List<T> list)
+    internal NonEmptyList(T[] list)
     {
-        if (list == null || list.Count == 0)
+        if (list == null || list.Length == 0)
         {
             throw new ArgumentException("NonEmptyList must contain at least one element.");
         }
@@ -33,8 +33,8 @@ public class NonEmptyList<T> : IReadOnlyList<T>
     public static NonEmptyList<T> Create(IEnumerable<T> items)
     {
         ArgumentNullException.ThrowIfNull(items);
-        var list = items.ToList();
-        if (list.Count == 0)
+        var list = items.ToArray();
+        if (list.Length == 0)
         {
             throw new ArgumentException("NonEmptyList must contain at least one element.");
         }
@@ -48,12 +48,7 @@ public class NonEmptyList<T> : IReadOnlyList<T>
     /// <param name="head">The first element of the list.</param>
     /// <param name="tail">The optional additional elements of the list.</param>
     /// <returns>A new instance of <see cref="NonEmptyList{T}"/> containing the provided elements.</returns>
-    public static NonEmptyList<T> Create(T head, params T[] tail)
-    {
-        var list = new List<T> { head };
-        list.AddRange(tail);
-        return new NonEmptyList<T>(list);
-    }
+    public static NonEmptyList<T> Create(T head, params T[] tail) => new([head, ..tail]);
 
     /// <summary>
     /// Gets the first element of the list.
@@ -75,8 +70,61 @@ public class NonEmptyList<T> : IReadOnlyList<T>
     /// <summary>
     /// Gets the number of elements in the list.
     /// </summary>
-    public int Count => _list.Count;
+    public int Count => _list.Length;
 
-    public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();
+    /// <inheritdoc/>
+    public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_list).GetEnumerator();
+
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T>)_list).GetEnumerator();
+
+    public static bool operator !=(NonEmptyList<T> left, NonEmptyList<T>? right)
+    {
+        return !left.Equals(right);
+    }
+
+    public static bool operator ==(NonEmptyList<T> left, NonEmptyList<T>? right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc/>
+    public bool Equals(NonEmptyList<T>? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return ReferenceEquals(this, other) || _list.AsSpan().SequenceEqual(other._list);
+    }
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        if (obj is null)
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        return obj.GetType() == GetType() && Equals((NonEmptyList<T>)obj);
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        HashCode hashCode = default;
+
+        foreach (var item in _list)
+        {
+            hashCode.Add(item);
+        }
+
+        return hashCode.ToHashCode();
+    }
 }
