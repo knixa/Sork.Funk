@@ -1,6 +1,4 @@
-﻿using Sork.Funk;
-
-namespace Sork.Funk.Tests;
+﻿namespace Sork.Funk.Tests;
 
 public class TryTest
 {
