@@ -1,6 +1,4 @@
-﻿using Sork.Funk;
-
-namespace Sork.Funk.Tests;
+﻿namespace Sork.Funk.Tests;
 
 public class NullableExtensionsTest
 {
@@ -9,7 +7,7 @@ public class NullableExtensionsTest
     {
         int? val = null;
 
-        val.ToOption().IsNone.Should().BeTrue();
+        Assert.True(val.ToOption().IsNone);
     }
 
     [Fact]
@@ -17,7 +15,7 @@ public class NullableExtensionsTest
     {
         bool? val = true;
 
-        val.ToOption().IsSome.Should().BeTrue();
+        Assert.True(val.ToOption().IsSome);
     }
 
     [Fact]
@@ -25,9 +23,9 @@ public class NullableExtensionsTest
     {
         List<int> val = null;
 
-        val.ToOption().IsNone.Should().BeTrue();
+        Assert.True(val.ToOption().IsNone);
     }
 
     [Fact]
-    public void ToOptions_WithList_ShouldBeSome() => new List<int> { 1, 2, 3 }.ToOption().IsSome.Should().BeTrue();
+    public void ToOptions_WithList_ShouldBeSome() =>Assert.True( new List<int> { 1, 2, 3 }.ToOption().IsSome);
 }

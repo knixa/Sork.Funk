@@ -1,7 +1,5 @@
 ﻿using FsCheck;
 using FsCheck.Xunit;
-using Sork.Funk;
-using System.Diagnostics.CodeAnalysis;
 using Random = System.Random;
 
 namespace Sork.Funk.Tests;
@@ -10,70 +8,63 @@ public class EitherTest
 {
     [Fact]
     public void Map_OnRightInstance_ShouldApplyFunction() =>
-        Either<string, int>.Right(10)
+        Assert.Equal(20, Either<string, int>.Right(10)
             .Map(x => x * 2.0)
-            .Match(l => -0, r => r)
-            .Should().Be(20);
+            .Match(l => -0, r => r));
 
     [Fact]
     public void Map_OnLeftInstance_ShouldNotApplyFunction() =>
-        Either<int, string>.Left(10)
+        Assert.Equal(10,Either<int, string>.Left(10)
             .Map(s => s.ToUpper())
-            .Reduce(s => -100)
-            .Should().Be(10);
+            .Reduce(s => -100));
+
 
     [Fact]
     public void Reduce_OnRightInstance_ShouldApplyFunction() =>
-        Either<int, string>.Right("test")
-            .Reduce(s => s.Length)
-            .Should().Be(4);
+        Assert.Equal(4, Either<int, string>.Right("test")
+            .Reduce(s => s.Length));
 
     [Fact]
     public void MapToUpper_OnRightInstance_ShouldApplyFunction() =>
-        Either<int, string>.Right("test")
+        Assert.Equal("TEST", Either<int, string>.Right("test")
             .Map(s => s.ToUpper())
-            .Match(l => "failure", r => r)
-            .Should().Be("TEST");
+            .Match(l => "failure", r => r));
 
     [Fact]
     public void Reduce_OnLeft_ShouldReturnLeft()
     {
-        Either<string, string>.Left("test")
-            .Reduce(s => s.ToUpper())
-            .Should().Be("test");
+        Assert.Equal("test", Either<string, string>.Left("test")
+            .Reduce(s => s.ToUpper()));
 
-        Either<int, int[]>.Left(-10)
-            .Reduce(r => r.Sum())
-            .Should().Be(-10);
+        Assert.Equal(-10, Either<int, int[]>.Left(-10)
+            .Reduce(r => r.Sum()));
     }
 
     [Fact]
     public void Match_OnLeft_ShouldNotApplyFunction() =>
-        Either<string, string>.Left("test")
+        Assert.Equal("test", Either<string, string>.Left("test")
             .Map(s => s.ToUpper())
-            .Match(f => f, f => f)
-            .Should().Be("test");
+            .Match(f => f, f => f));
 
     [Fact]
     public void Match_OnRight_ShouldApplyFunction() =>
-        Either<int, int>.Right(5)
+        Assert.Equal(10,Either<int, int>.Right(5)
             .Map(i => i * 2)
-            .Match(l => l, r => r).Should().Be(10);
+            .Match(l => l, r => r));
 
     [Fact]
     public void ReduceOnRight_ShouldReturnReduce()
     {
-        Either<string, string>.Right("test").Reduce(s => s.ToUpper()).Should().Be("TEST");
-        Either<int, int[]>.Right([1, 2, 3, 4, 5]).Reduce(r => r.Sum()).Should().Be(15);
+        Assert.Equal("TEST",Either<string, string>.Right("test").Reduce(s => s.ToUpper()));
+        Assert.Equal(15, Either<int, int[]>.Right([1, 2, 3, 4, 5]).Reduce(r => r.Sum()));
     }
 
     [Property]
     public void Swap_OnRight_ShouldReduceRightValue(NonNull<string> val) =>
-        Either<int, string>.Right(val.Get)
+        Assert.Equal(val.Get.ToUpper(), Either<int, string>.Right(val.Get)
             .Map(s => s.ToUpper())
             .Swap()
-            .Reduce(x => "should not match")
-            .Should().Be(val.Get.ToUpper());
+            .Reduce(x => "should not match"));
 
     [Fact]
     public void Swap_OnLeft_ShouldReduceOriginalLeft() =>
@@ -108,10 +99,10 @@ public class EitherTest
         Assert.NotEqual(left1, left2);
         Assert.NotEqual(right1, right2);
         Assert.NotEqual(left1, right2);
-        right1.IsRight.Should().BeTrue();
-        left1.IsLeft.Should().BeTrue();
-        right2.IsLeft.Should().BeFalse();
-        left2.IsRight.Should().BeFalse();
+        Assert.True(right1.IsRight);
+        Assert.True(left1.IsLeft);
+        Assert.False(right2.IsLeft);
+        Assert.False(left2.IsRight);
     }
 
     [Fact]
@@ -153,7 +144,7 @@ public class EitherTest
     public void IfRight_OnRight_ShouldReturnProvidedData(int num)
     {
         var data = new Random();
-        Either<Random, int>.Right(num).IfRight(data).Should().Be(data);
+        Assert.Equal(data, Either<Random, int>.Right(num).IfRight(data));
     }
 
     [Property]
@@ -166,6 +157,6 @@ public class EitherTest
             return data;
         }
 
-        Either<Random, int>.Right(num).IfRight(DataFunc).Should().Be(data);
+        Assert.Equal(data, Either<Random, int>.Right(num).IfRight(DataFunc));
     }
 }

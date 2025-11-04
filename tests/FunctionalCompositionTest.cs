@@ -11,6 +11,6 @@ public class CompositionTest
        Func<int, int> timesTwo = a => a * 2;
        var result = addOne.Compose(timesTwo);
        
-       result(input).Should().Be((input + 1 ) * 2);
+       Assert.Equal((input +1) * 2, result(input));
     }
 }
