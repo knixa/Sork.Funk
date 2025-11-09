@@ -13,15 +13,7 @@ public sealed class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList
 {
     private readonly T[] _list;
 
-    internal NonEmptyList(T[] list)
-    {
-        if (list == null || list.Length == 0)
-        {
-            throw new ArgumentException("NonEmptyList must contain at least one element.");
-        }
-
-        _list = list;
-    }
+    internal NonEmptyList(T[] list) => _list = list;
 
     /// <summary>
     /// Creates a <see cref="NonEmptyList{T}"/> from an IEnumerable of items.
@@ -36,7 +28,7 @@ public sealed class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList
         var list = items.ToArray();
         if (list.Length == 0)
         {
-            throw new ArgumentException("NonEmptyList must contain at least one element.");
+            throw new ArgumentException($"{nameof(items)} must contain at least one element.");
         }
 
         return new NonEmptyList<T>(list);
@@ -58,7 +50,7 @@ public sealed class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList
     /// <summary>
     /// Gets all elements of the list except the first one.
     /// </summary>
-    public IReadOnlyList<T> Tail => _list.Skip(1).ToList();
+    public IReadOnlyList<T> Tail => _list.Length == 1 ? [] : _list[1..];
 
     /// <summary>
     /// Gets the element at the specified index.
@@ -124,7 +116,6 @@ public sealed class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList
         {
             hashCode.Add(item);
         }
-
         return hashCode.ToHashCode();
     }
 }
