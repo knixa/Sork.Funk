@@ -65,8 +65,8 @@ public readonly record struct Option<T> where T : notnull
             ? some(Value!)
             : none();
 
-    public Either<TL, T> ToEither<TL>(Func<TL> func) =>
-        IsSome ? Either<TL, T>.Right(Value!) : Either<TL, T>.Left(func());
+    public Either<L, T> ToEither<L>(Func<L> func) =>
+        IsSome ? Either<L, T>.Right(Value!) : Either<L, T>.Left(func());
 
     public T IfNone(T val) => IsSome ? Value! : val;
 }
