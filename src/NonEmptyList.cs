@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Represents a list that is guaranteed to contain at least one element.
+/// Represents a list guaranteed to contain at least one element.
 /// </summary>
 /// <typeparam name="T">The type of the elements in the list.</typeparam>
 public sealed class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList<T> where T : IEquatable<T>
@@ -40,7 +40,7 @@ public sealed class NonEmptyList<T> : IEquatable<NonEmptyList<T>>, IReadOnlyList
     /// <param name="head">The first element of the list.</param>
     /// <param name="tail">The optional additional elements of the list.</param>
     /// <returns>A new instance of <see cref="NonEmptyList{T}"/> containing the provided elements.</returns>
-    public static NonEmptyList<T> Create(T head, params T[] tail) => new([head, ..tail]);
+    public static NonEmptyList<T> Create(T head, params ReadOnlySpan<T> tail) => new([head, ..tail]);
 
     /// <summary>
     /// Gets the first element of the list.
